@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.zy.dao.UserDao">
+
+    <select id="queryAllUser" resultType="User">
+        select * from user
+        <if test="page!=0 and rows!=null">
+            limit #{page},#{rows}
+        </if>
+
+    </select>
+
+    <select id="countUser" resultType="int">
+        select count(*) from user
+    </select>
+
+    <!--导入用户-->
+    <insert id="importUser" parameterType="User">
+        insert into user (username,password,name,sex)
+        values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{item.username},#{item.password},#{item.name},#{item.sex})
+            </foreach>
+    </insert>
+    
+    <!--查询一周内注册的用户-->
+    <select id="queryOneWeek" resultType="int">
+        SELECT count(*) FROM `user`
+        where createtime>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)
+    </select>
+
+    <!--查询半个月内注册的用户-->
+    <select id="queryTwoWeek" resultType="int">
+        SELECT count(*) FROM `user`
+        where createtime>DATE_SUB(CURDATE(), INTERVAL 2 WEEK)
+    </select>
+
+    <!--查询一年内创建的用户-->
+    <select id="queryOneYear" resultType="int">
+        SELECT count(*) FROM `user`
+        where createtime>DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    </select>
+
+</mapper>

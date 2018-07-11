@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.zy.dao.AlbumDao">
+    <select id="queryAllAlbum" resultMap="a1">
+        select
+            a.id, a.name, a.brodecast,
+            a.author, a.count, a.coverpicture,
+            a.score, a.content, a.createtime,
+            a.status, c.id cid, c.name cname, size,
+            albumId, path, length, times, c.createtime ccreatetime
+        from (select * from album  LIMIT #{page},#{rows}) a
+            left join (SELECT * from chapter ORDER BY `name`) c
+                on a.id = c.albumId
+
+    </select>
+    <resultMap id="a1" type="Album">
+        <id column="id" property="id"/>
+        <result property="name" column="name"/>
+        <result property="brodecast" column="brodecast"/>
+        <result property="author" column="author"/>
+        <result property="count" column="count"/>
+        <result property="coverpicture" column="coverpicture"/>
+        <result property="score" column="score"/>
+        <result property="content" column="content"/>
+        <result property="createtime" column="createtime"/>
+        <result property="status" column="status"/>
+        <collection property="children" ofType="Chapter">
+            <id column="cid" property="id"/>
+            <result column="cname" property="name"/>
+            <result column="size" property="size"/>
+            <result column="albumId" property="albumId"/>
+            <result column="path" property="path"/>
+            <result column="length" property="length"/>
+            <result column="times" property="times"/>
+            <result column="ccreatetime" property="createtime"/>
+        </collection>
+    </resultMap>
+
+    <!--查数据总数-->
+    <select id="countAllbum" resultType="int">
+        select count(*) from album
+    </select>
+
+    <!--添加专辑-->
+    <insert id="insertAlbum" parameterType="Album">
+        insert into album
+        (id,name,brodecast,author,count,coverpicture,score,content,createtime,status)
+        values(#{id},#{name},#{brodecast},#{author},#{count},#{coverpicture},#{score},#{content},#{createtime},#{status})
+    </insert>
+
+</mapper>
